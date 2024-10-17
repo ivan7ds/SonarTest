@@ -1,0 +1,20 @@
+[
+  {
+    "test_name": "Usuario introduce un email correcto y contraseña y existe",
+    "email": "test@test.test",
+    "password": "Corporate2024*",
+    "positive": true
+  },
+  {
+    "test_name": "Usuario introduce un email correcto y contraseña incorrecta",
+    "email": "test@test.test",
+    "password": "Corporate2024+",
+    "positive": false
+  },
+  {
+    "test_name": "Usuario introduce un usuario y contraseña pero no existe en keycloak",
+    "email": "usuario@no.existe",
+    "password": "Corporate2024*",
+    "positive": false
+  }
+]

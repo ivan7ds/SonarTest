@@ -1,0 +1,22 @@
+[
+  {
+    "test_name": "Actualizar compañia",
+    "id": null,
+    "response_code":{
+      "patch": 200,
+      "get": 200
+    },
+    "assert": null,
+    "positive": true
+  },
+  {
+    "test_name": "No permite actualizar una compania con campos erroneos",
+    "id": 53689,
+    "response_code":{
+      "patch": 404,
+      "get": 404
+    },
+    "assert": null,
+    "positive": false
+  }
+]

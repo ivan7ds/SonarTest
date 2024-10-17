@@ -1,0 +1,59 @@
+[
+  {
+    "test_name": "Registrar una compañia",
+    "body": {
+      "name": null,
+      "documentType": "CIF",
+      "documentNumber": "35503055V",
+      "address": "calle test",
+      "postalCode": "15006",
+      "province": "Test",
+      "country": "esp",
+      "language": "es"
+    },
+    "response_code":{
+      "post": 201,
+      "get": 200
+    },
+    "assert": null,
+    "positive": true
+  },
+  {
+    "test_name": "No permite registrar una compañia con parametros erroneos",
+    "body": {
+      "name": null,
+      "documentType": "CIF",
+      "documentNumber": "35503055V",
+      "address": "calle test",
+      "postalCode": "15006",
+      "province": "Test",
+      "country": "noExistePais",
+      "language": "es"
+    },
+    "response_code":{
+      "post": 400,
+      "get": 200
+    },
+    "assert": null,
+    "positive": false
+  },
+  {
+    "test_name": "No permite registrar una compañia ya existente",
+    "body": {
+      "name": "Diego",
+      "documentType": "CIF",
+      "documentNumber": "35503055V",
+      "address": "calle test",
+      "postalCode": "15006",
+      "province": "Test",
+      "country": "esp",
+      "language": "es"
+    },
+    "response_code":{
+      "post": 409,
+      "get": 200
+    },
+    "assert": null,
+    "positive": false
+  }
+]

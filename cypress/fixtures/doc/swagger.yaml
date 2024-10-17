@@ -1,0 +1,616 @@
+openapi: 3.0.0
+paths:
+  /v1/metrics:
+    get:
+      operationId: MetricsController_index
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: string
+      tags:
+        - DevOps
+  /v1/health:
+    get:
+      operationId: HealthController_check
+      parameters: []
+      responses:
+        '200':
+          description: The Health Check is successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  info:
+                    type: object
+                    example: &ref_0
+                      database: &ref_1
+                        status: up
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example: {}
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example: *ref_0
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+        '503':
+          description: The Health Check is not successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  info:
+                    type: object
+                    example: *ref_0
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  error:
+                    type: object
+                    example:
+                      redis: &ref_2
+                        status: down
+                        message: Could not connect
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+                    nullable: true
+                  details:
+                    type: object
+                    example:
+                      database: *ref_1
+                      redis: *ref_2
+                    additionalProperties:
+                      type: object
+                      required:
+                        - status
+                      properties:
+                        status:
+                          type: string
+                      additionalProperties: true
+      tags:
+        - DevOps
+  /companies:
+    post:
+      operationId: CompanyController_create
+      summary: Creates a company
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyCreateDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDto'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+        '409':
+          description: COMPANY_ALREADY_EXISTS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+      tags: &ref_3
+        - Companies
+    get:
+      operationId: CompanyController_list
+      summary: List the companies
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompanyDto'
+      tags: *ref_3
+  /companies/{id}:
+    get:
+      operationId: CompanyController_get
+      summary: Gets a company
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDto'
+        '404':
+          description: COMPANY_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+      tags: *ref_3
+    patch:
+      operationId: CompanyController_update
+      summary: Updates an organization
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyUpdateDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDto'
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDto'
+        '404':
+          description: COMPANY_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+        '409':
+          description: COMPANY_ALREADY_EXISTS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+      tags: *ref_3
+  /company-admins:
+    post:
+      operationId: CompanyAdminController_create
+      summary: Creates a companyAdmin
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyAdminCreateDto'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyAdminDto'
+        '409':
+          description: COMPANY_ADMIN_ALREADY_EXISTS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+      tags: &ref_4
+        - CompanyAdmins
+    get:
+      operationId: CompanyAdminController_list
+      summary: List company admins from company
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CompanyAdminDto'
+      tags: *ref_4
+  /company-admins/{id}:
+    get:
+      operationId: CompanyAdminController_get
+      summary: Gets a companyAdmin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyAdminDto'
+        '404':
+          description: COMPANY_ADMIN_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+      tags: *ref_4
+    patch:
+      operationId: CompanyAdminController_update
+      summary: Updates an company admin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyAdminUpdateDto'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyAdminDto'
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyAdminDto'
+        '404':
+          description: COMPANY_ADMIN_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+        '409':
+          description: COMPANY_ADMIN_ALREADY_EXISTS
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+      tags: *ref_4
+    delete:
+      operationId: CompanyAdminController_delete
+      summary: Delete an company admin
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyAdminDto'
+        '404':
+          description: COMPANY_ADMIN_NOT_FOUND
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomErrorDto'
+      tags: *ref_4
+  /okta/login:
+    get:
+      operationId: OktaController_login
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: &ref_5
+        - Okta
+  /okta/callback:
+    post:
+      operationId: OktaController_callback
+      parameters: []
+      responses:
+        '201':
+          description: ''
+      tags: *ref_5
+  /okta/logout:
+    get:
+      operationId: OktaController_logout
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+  /okta/refresh-token:
+    get:
+      operationId: OktaController_validateToken
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_5
+info:
+  title: Telpark Corporate API
+  description: ''
+  version: 0.0.1
+  contact: {}
+tags:
+  - name: Companies
+    description: ''
+  - name: CompanyAdmins
+    description: ''
+  - name: Okta
+    description: ''
+  - name: DevOps
+    description: ''
+servers: []
+components:
+  schemas:
+    CompanyCreateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        documentType:
+          type: string
+          enum:
+            - CIF
+            - NIF
+            - NIE
+        documentNumber:
+          type: string
+        address:
+          type: string
+        postalCode:
+          type: string
+        province:
+          type: string
+        country:
+          type: string
+        language:
+          type: string
+      required:
+        - name
+        - documentType
+        - documentNumber
+        - address
+        - postalCode
+        - province
+        - country
+        - language
+    CompanyDto:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        documentType:
+          enum:
+            - CIF
+            - NIF
+            - NIE
+          type: string
+        documentNumber:
+          type: string
+        address:
+          type: string
+        postalCode:
+          type: string
+        province:
+          type: string
+        country:
+          type: string
+        language:
+          type: string
+        invoicePeriod:
+          type: string
+          nullable: true
+        disabled:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - documentType
+        - documentNumber
+        - address
+        - postalCode
+        - province
+        - country
+        - language
+        - invoicePeriod
+        - disabled
+        - createdAt
+        - updatedAt
+    CustomErrorStatusDto:
+      type: object
+      properties:
+        message:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        exception:
+          type: string
+        code:
+          type: string
+          enum:
+            - INTERNAL_ERROR
+            - COMPANY_ALREADY_EXISTS
+            - COMPANY_NOT_FOUND
+            - COMPANY_ADMIN_ALREADY_EXISTS
+            - COMPANY_ADMIN_NOT_FOUND
+            - COMPANY_ADMIN_NOT_ALLOWED_TO_BE_DELETED
+      required:
+        - exception
+    CustomErrorDto:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/CustomErrorStatusDto'
+        timestamp:
+          type: string
+        code:
+          type: string
+        path:
+          type: string
+      required:
+        - error
+        - timestamp
+        - path
+    CompanyUpdateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        documentType:
+          type: string
+          enum:
+            - CIF
+            - NIF
+            - NIE
+        documentNumber:
+          type: string
+        address:
+          type: string
+        postalCode:
+          type: string
+        province:
+          type: string
+        country:
+          type: string
+        language:
+          type: string
+        invoicePeriod:
+          type: string
+        disabled:
+          type: boolean
+    CompanyAdminCreateDto:
+      type: object
+      properties:
+        name:
+          type: string
+        surname:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        language:
+          type: string
+        companyId:
+          type: number
+      required:
+        - name
+        - surname
+        - phone
+        - email
+        - language
+        - companyId
+    CompanyAdminDto:
+      type: object
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        surname:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        language:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        deletedAt:
+          format: date-time
+          type: string
+        companyId:
+          type: number
+      required:
+        - id
+        - name
+        - surname
+        - phone
+        - email
+        - language
+        - createdAt
+        - updatedAt
+        - deletedAt
+        - companyId
+    CompanyAdminUpdateDto:
+      type: object
+      properties: {}

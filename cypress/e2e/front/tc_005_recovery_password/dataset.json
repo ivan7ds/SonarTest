@@ -1,0 +1,41 @@
+[
+  {
+    "test_name": "Usuario olvido su contraseña y genera una nueva correctamente",
+    "email": "test@test.test",
+    "email_invalid": false,
+    "password": "Corporate2024*",
+    "new_password":{
+      "capital":"Co",
+      "long":"rporate",
+      "number":"2024",
+      "special":"*"
+    },
+    "positive": true
+  },
+  {
+    "test_name": "Usuario olvido su contraseña y genera una nueva incorrectamente",
+    "email": "test@test.test",
+    "email_invalid": false,
+    "password": "Corporate2024+",
+    "new_password":{
+      "capital":"Co",
+      "long":"rporate",
+      "number":"2024",
+      "special":"*"
+    },
+    "positive": false
+  },
+  {
+    "test_name": "Usuario olvido su contraseña e introduce un correo invalido",
+    "email": "correo@no.valido",
+    "email_invalid": true,
+    "password": "Corporate2024+",
+    "new_password":{
+      "capital":"Co",
+      "long":"rporate",
+      "number":"2024",
+      "special":"*"
+    },
+    "positive": false
+  }
+]
