@@ -78,71 +78,27 @@ module.exports = defineConfig({
           });
         },
 
-        async validateApiResponse({ response, endpoint, method}) {
+        async validateApiResponse({ response, endpoint, method }) {
           const swaggerPath = path.resolve("cypress/fixtures/doc/swagger.yaml");
           try {
             if (!apiSchema) {
-              // Cargamos y validamos el esquema Swagger solo una vez
               apiSchema = await SwaggerParser.validate(swaggerPath);
             }
+        
             const schema = apiSchema;
+            const pathObj = getPathObject(schema, endpoint, method);
+            const responseStatusSchema = getResponseStatusSchema(pathObj, response.status, endpoint, method);
         
-            // Buscar el esquema de la respuesta
-            const pathObj = schema.paths[endpoint]?.[method.toLowerCase()];
-            if (!pathObj?.responses?.[response.status]) {
-              const errorMsg = `No se encontró el esquema de respuesta para el estado ${response.status} en el endpoint ${endpoint} usando el método ${method}`;
-              // Lanza el error o imprime el mensaje dependiendo del parámetro
-              if (shouldFailOnInvalidSchema) {
-                throw new Error(errorMsg);
-              } else {
-                console.warn(errorMsg);
-                return { valid: false, error: errorMsg };
-              }
-            }
-             
-            const endpointSchema = pathObj.responses[response.status];
-        
-            // Ajustamos el esquema según OpenAPI 3.0
-            const responseSchema = endpointSchema.content?.["application/json"]?.schema;
-            if (!responseSchema) {
-              const errorMsg = "No se encontró el esquema de respuesta JSON para validar.";
-              if (shouldFailOnInvalidSchema) {
-                throw new Error(errorMsg);
-              } else {
-                console.warn(errorMsg);
-                return { valid: false, error: errorMsg };
-              }
-            }
-        
-            // **Modificación aquí: Configurar AJV con strict: false**
-            const ajv = new Ajv({ allErrors: true, strict: false });
-            const validate = ajv.compile(responseSchema);
-            const valid = validate(response.body);
-            if (!valid) {
-              const errorMsg = `Error de validación: ${ajv.errorsText(validate.errors)}`;
-              if (shouldFailOnInvalidSchema) {
-                throw new Error(errorMsg);
-              } else {
-                console.warn(errorMsg);
-                return { valid: false, error: errorMsg };
-              }
-            }
+            const responseSchema = getResponseSchema(responseStatusSchema);
+            validateResponse(response.body, responseSchema);
         
             return { valid: true };
         
           } catch (error) {
-            console.error("Error al validar el esquema:", error);
-            if (shouldFailOnInvalidSchema) {
-              throw error;
-            } else {
-              return {
-                valid: false,
-                error: "Error al validar el esquema: " + error.message,
-              };
-            }
+            return handleValidationError(error);
           }
         }
-        
+                
       });
 
       return config;
@@ -163,3 +119,64 @@ module.exports = defineConfig({
     openMode: 0,
   },
 });
+
+
+
+function getPathObject(schema, endpoint, method) {
+  const pathObj = schema.paths[endpoint]?.[method.toLowerCase()];
+  if (!pathObj?.responses) {
+    throwOrWarn(
+      `No se encontró el esquema de respuesta para el estado ${response.status} en el endpoint ${endpoint} usando el método ${method}`
+    );
+  }
+  return pathObj;
+}
+
+function getResponseStatusSchema(pathObj, status, endpoint, method) {
+  const responseStatusSchema = pathObj.responses[status];
+  if (!responseStatusSchema) {
+    throwOrWarn(
+      `No se encontró el esquema de respuesta para el estado ${status} en el endpoint ${endpoint} usando el método ${method}`
+    );
+  }
+  return responseStatusSchema;
+}
+
+function getResponseSchema(responseStatusSchema) {
+  const responseSchema = responseStatusSchema.content?.["application/json"]?.schema;
+  if (!responseSchema) {
+    throwOrWarn("No se encontró el esquema de respuesta JSON para validar.");
+  }
+  return responseSchema;
+}
+
+function validateResponse(body, responseSchema) {
+  const ajv = new Ajv({ allErrors: true, strict: false });
+  const validate = ajv.compile(responseSchema);
+  const valid = validate(body);
+
+  if (!valid) {
+    throwOrWarn(`Error de validación: ${ajv.errorsText(validate.errors)}`);
+  }
+}
+
+function throwOrWarn(message) {
+  if (shouldFailOnInvalidSchema) {
+    throw new Error(message);
+  } else {
+    console.warn(message);
+    return { valid: false, error: message };
+  }
+}
+
+function handleValidationError(error) {
+  console.error("Error al validar el esquema:", error);
+  if (shouldFailOnInvalidSchema) {
+    throw error;
+  } else {
+    return {
+      valid: false,
+      error: "Error al validar el esquema: " + error.message,
+    };
+  }
+}
