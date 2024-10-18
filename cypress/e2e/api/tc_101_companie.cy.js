@@ -16,6 +16,26 @@ describe("Validacion de endpoints /companie", () => {
   tc102Data.forEach((testCase) => {
     it(testCase.test_name, () => {
       cy.updateCompanie(testCase);
+      tc102Data.forEach((testCase) => {
+        it(testCase.test_name, () => {
+          cy.updateCompanie(testCase);
+          tc102Data.forEach((testCase) => {
+            it(testCase.test_name, () => {
+              cy.updateCompanie(testCase);
+              tc102Data.forEach((testCase) => {
+                it(testCase.test_name, () => {
+                  cy.updateCompanie(testCase);
+                  tc102Data.forEach((testCase) => {
+                    it(testCase.test_name, () => {
+                      cy.updateCompanie(testCase);
+                    });
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
     });
   });
 });
