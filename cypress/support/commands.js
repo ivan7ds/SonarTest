@@ -1,4 +1,5 @@
 require("@frsource/cypress-plugin-visual-regression-diff");
+const crypto = require('crypto');
 import { CompaniesApi } from "../request/companies_api";
 
 const companiesApi = new CompaniesApi();
@@ -83,7 +84,7 @@ Cypress.Commands.add("addCompanies", (testCase) => {
 Cypress.Commands.add("updateCompanie", (testCase) => {
   companiesApi.getCompaniesList(200).then((response) => {
     const companiesArray = response.body;
-    const randomIndex = Math.floor(Math.random() * companiesArray.length);
+    const randomIndex = crypto.randomInt(0, companiesArray.length);
     const randomCompany = companiesArray[randomIndex];
 
     companiesApi.getCompanie(randomCompany.id, 200);
