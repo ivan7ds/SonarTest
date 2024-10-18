@@ -3,14 +3,6 @@ class AdminLoginPage {
   visit(param = '') {
     cy.step("Visitar web");
     cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    cy.visit(`${ADMIN_ORIGIN}${param}`).wait(5000);
-    
   }
 }
 
