@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 /**
  * Clase que contiene utilidades para realizar selecciones aleatorias.
  */
@@ -29,7 +31,7 @@ export class RandomUtils {
        * Valor aleatorio ponderado.
        * @type {number}
        */
-      const randomValue = Math.random() * totalWeight;
+      const randomValue = crypto.randomInt(0, totalWeight);
   
       /**
        * Peso acumulado mientras se itera a través de los elementos.
@@ -58,7 +60,8 @@ export class RandomUtils {
         throw new Error('No se ha recibido un array.');
       }
   
-      const randomIndex = Math.floor(Math.random() * array.length);
+      const randomIndex = crypto.randomInt(0, array.length);
+      
       return array[randomIndex];
     }
   
@@ -82,8 +85,9 @@ export class RandomUtils {
       if (min > max) {
         throw new Error('min no puede ser mayor que max.');
       }
-  
-      return Math.floor(Math.random() * (max - min + 1) + min);
+      const randomValue = crypto.randomInt(min, max + 1);
+
+      return randomValue;
     }
   
     /**
@@ -102,7 +106,7 @@ export class RandomUtils {
         throw new Error('Callback debe ser una función');
       }
   
-      const randomValue = Math.random() * 100;
+      const randomValue = crypto.randomInt(0, 101);
       if (randomValue <= percentage) {
         callback();
       }
@@ -122,7 +126,7 @@ export class RandomUtils {
         throw new Error('El argumento "max" debe ser un número positivo.');
       }
   
-      return Math.floor(Math.random() * (max + 1));
+      return crypto.randomInt(0, max + 1);
     }
   
     /** Genera una cadena aleatoria de una longitud especificada.
@@ -149,7 +153,7 @@ export class RandomUtils {
       let result = '';
   
       for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
+        const randomIndex = crypto.randomInt(0, characters.length);
         result += characters [randomIndex];
       }
   

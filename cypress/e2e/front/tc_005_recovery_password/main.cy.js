@@ -1,21 +1,22 @@
-import LoginPage from "../../../pages/login";
+import CompanyLoginPage from "../../../pages/company_admin_login";
 import RecoveryPage from "../../../pages/recovery";
 import MailPage from "../../../pages/mail";
 import TransactionsPage from "../../../pages/transactions";
 const testData = require("./dataset.json");
-const loginPage = new LoginPage();
+const companyLoginPage = new CompanyLoginPage();
 const recoveryPage = new RecoveryPage();
 const transactionsPage = new TransactionsPage();
 const mailPage = new MailPage();
 
 describe("Recovery Password", () => {
   beforeEach(() => {
-    loginPage.visit();
+    cy.step("Visitar web");
+    cy.visit(`http://localhost:8080/realms/corporate/protocol/openid-connect/auth?client_id=corporate-web&redirect_uri=http://localhost:4200&response_type=code`).wait(1000);
   });
 
   testData.forEach((testCase) => {
     it(testCase.test_name, () => {
-      loginPage.clickForgotPassword();
+      companyLoginPage.clickForgotPassword();
       recoveryPage.enterEmail(testCase.email);
       recoveryPage.recoveryButton();
       mailPage.visit(testCase.email, testCase.email_invalid);
