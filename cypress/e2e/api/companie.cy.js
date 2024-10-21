@@ -87,7 +87,7 @@ describe("API Integration Tests", () => {
       otherCompany.documentType = "CIF";
       otherCompany.documentNumber = "B12345678";
 
-      companiesApi.postCompanies(validCompany, 400).then((response) => {
+      companiesApi.postCompanies(otherCompany, 400).then((response) => {
         expect(response.body).to.have.property("error");
       });
     });
@@ -97,7 +97,7 @@ describe("API Integration Tests", () => {
       otherCompany.documentType = "NIE";
       otherCompany.documentNumber = "X1234567L";
 
-      companiesApi.postCompanies(validCompany, 400).then((response) => {
+      companiesApi.postCompanies(otherCompany, 400).then((response) => {
         expect(response.body).to.have.property("error");
       });
     });
@@ -107,7 +107,7 @@ describe("API Integration Tests", () => {
       otherCompany.documentType = "NIF";
       otherCompany.documentNumber = "12345678Z";
 
-      companiesApi.postCompanies(validCompany, 400).then((response) => {
+      companiesApi.postCompanies(otherCompany, 400).then((response) => {
         expect(response.body).to.have.property("error");
       });
     });
