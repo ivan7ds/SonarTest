@@ -6,8 +6,7 @@ const randomUtils = new RandomUtils();
 describe("Validacion de endpoints /companie", () => {
   tc101Data.forEach((testCase) => {
     it(testCase.test_name, () => {
-
-      if(testCase.body.name === null){
+      if (testCase.body.name === null) {
         testCase.body.name = randomUtils.generateRandomString(5);
       }
       cy.addCompanies(testCase);

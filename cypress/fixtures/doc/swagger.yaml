@@ -152,16 +152,118 @@ paths:
     get:
       operationId: CompanyController_list
       summary: List the companies
-      parameters: []
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: >-
+            Page number to retrieve.If you provide invalid value the default
+            page number will applied
+                    <p>
+                         <b>Example: </b> 1
+                      </p>
+                    <p>
+                         <b>Default Value: </b> 1
+                      </p>
+                    
+          schema:
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: |-
+            Number of records per page.
+                  <p>
+                         <b>Example: </b> 20
+                      </p>
+                  <p>
+                         <b>Default Value: </b> 10
+                      </p>
+                  <p>
+                         <b>Max Value: </b> 50
+                      </p>
+
+                  If provided value is greater than max value, max value will be applied.
+                  
+          schema:
+            type: number
+        - name: sortBy
+          required: false
+          in: query
+          description: |-
+            Parameter to sort by.
+                  <p>To sort by multiple fields, just provide query param multiple types. The order in url defines an order of sorting</p>
+                  <p>
+                         <b>Format: </b> fieldName:DIRECTION
+                      </p>
+                  <p>
+                         <b>Example: </b> sortBy=id:DESC&sortBy=createdAt:ASC
+                      </p>
+                  <p>
+                         <b>Default Value: </b> updatedAt:DESC
+                      </p>
+                  <h4>Available Fields</h4><ul><li>updatedAt</li></ul>
+                  
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - updatedAt:ASC
+                - updatedAt:DESC
+        - name: search
+          required: false
+          in: query
+          description: |-
+            Search term to filter result values
+                    <p>
+                         <b>Example: </b> John
+                      </p>
+                    <p>
+                         <b>Default Value: </b> No default value
+                      </p>
+                    
+          schema:
+            type: string
+        - name: searchBy
+          required: false
+          in: query
+          description: |-
+            List of fields to search by term to filter result values
+                    <p>
+                         <b>Example: </b> 
+                      </p>
+                    <p>
+                         <b>Default Value: </b> By default all fields mentioned below will be used to search by term
+                      </p>
+                    <h4>Available Fields</h4><ul></ul>
+                    
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CompanyDto'
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedDocumented'
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CompanyDto'
+                      meta:
+                        properties:
+                          select:
+                            type: array
+                            items:
+                              type: string
+                          filter:
+                            type: object
+                            properties: {}
       tags: *ref_3
   /companies/{id}:
     get:
@@ -257,16 +359,153 @@ paths:
     get:
       operationId: CompanyAdminController_list
       summary: List company admins from company
-      parameters: []
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: >-
+            Page number to retrieve.If you provide invalid value the default
+            page number will applied
+                    <p>
+                         <b>Example: </b> 1
+                      </p>
+                    <p>
+                         <b>Default Value: </b> 1
+                      </p>
+                    
+          schema:
+            type: number
+        - name: limit
+          required: false
+          in: query
+          description: |-
+            Number of records per page.
+                  <p>
+                         <b>Example: </b> 20
+                      </p>
+                  <p>
+                         <b>Default Value: </b> 10
+                      </p>
+                  <p>
+                         <b>Max Value: </b> 50
+                      </p>
+
+                  If provided value is greater than max value, max value will be applied.
+                  
+          schema:
+            type: number
+        - name: filter.company.id
+          required: false
+          in: query
+          description: |-
+            Filter by company.id query param.
+                      <p>
+                         <b>Format: </b> filter.company.id={$not}:OPERATION:VALUE
+                      </p>
+                      <p>
+                         <b>Example: </b> filter.company.id=$not:$like:John Doe&filter.company.id=like:John
+                      </p>
+                      <h4>Available Operations</h4><ul><li>$and</li>
+            <li>$or</li>
+            <li>$not</li>
+            <li>$eq</li>
+            <li>$gt</li>
+            <li>$gte</li>
+            <li>$in</li>
+            <li>$null</li>
+            <li>$lt</li>
+            <li>$lte</li>
+            <li>$btw</li>
+            <li>$ilike</li>
+            <li>$sw</li>
+            <li>$contains</li></ul>
+          schema:
+            type: array
+            items:
+              type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: |-
+            Parameter to sort by.
+                  <p>To sort by multiple fields, just provide query param multiple types. The order in url defines an order of sorting</p>
+                  <p>
+                         <b>Format: </b> fieldName:DIRECTION
+                      </p>
+                  <p>
+                         <b>Example: </b> sortBy=id:DESC&sortBy=createdAt:ASC
+                      </p>
+                  <p>
+                         <b>Default Value: </b> updatedAt:DESC
+                      </p>
+                  <h4>Available Fields</h4><ul><li>updatedAt</li></ul>
+                  
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - updatedAt:ASC
+                - updatedAt:DESC
+        - name: search
+          required: false
+          in: query
+          description: |-
+            Search term to filter result values
+                    <p>
+                         <b>Example: </b> John
+                      </p>
+                    <p>
+                         <b>Default Value: </b> No default value
+                      </p>
+                    
+          schema:
+            type: string
+        - name: searchBy
+          required: false
+          in: query
+          description: |-
+            List of fields to search by term to filter result values
+                    <p>
+                         <b>Example: </b> 
+                      </p>
+                    <p>
+                         <b>Default Value: </b> By default all fields mentioned below will be used to search by term
+                      </p>
+                    <h4>Available Fields</h4><ul></ul>
+                    
+          schema:
+            type: array
+            items:
+              type: string
       responses:
         '200':
           description: ''
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/CompanyAdminDto'
+                allOf:
+                  - $ref: '#/components/schemas/PaginatedDocumented'
+                  - properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/CompanyAdminDto'
+                      meta:
+                        properties:
+                          select:
+                            type: array
+                            items:
+                              type: string
+                          filter:
+                            type: object
+                            properties:
+                              company.id:
+                                oneOf:
+                                  - type: string
+                                  - type: array
+                                    items:
+                                      type: string
       tags: *ref_4
   /company-admins/{id}:
     get:
@@ -517,14 +756,98 @@ components:
           $ref: '#/components/schemas/CustomErrorStatusDto'
         timestamp:
           type: string
-        code:
-          type: string
         path:
           type: string
       required:
         - error
         - timestamp
         - path
+    PaginatedMetaDocumented:
+      type: object
+      properties:
+        itemsPerPage:
+          type: number
+          title: Number of items per page
+        totalItems:
+          type: number
+          title: Total number of items
+        currentPage:
+          type: number
+          title: Current requested page
+        totalPages:
+          type: number
+          title: Total number of pages
+        sortBy:
+          type: array
+          title: Sorting by columns
+          items:
+            type: array
+            items:
+              oneOf:
+                - type: string
+                - type: string
+                  enum:
+                    - ASC
+                    - DESC
+        searchBy:
+          title: Search by fields
+          type: array
+          items:
+            type: string
+        search:
+          type: string
+          title: Search term
+        select:
+          title: List of selected fields
+          type: array
+          items:
+            type: string
+        filter:
+          type: object
+          title: Filters that applied to the query
+      required:
+        - itemsPerPage
+        - totalItems
+        - currentPage
+        - totalPages
+    PaginatedLinksDocumented:
+      type: object
+      properties:
+        first:
+          type: string
+          title: Link to first page
+        previous:
+          type: string
+          title: Link to previous page
+        current:
+          type: string
+          title: Link to current page
+        next:
+          type: string
+          title: Link to next page
+        last:
+          type: string
+          title: Link to last page
+    PaginatedDocumented:
+      type: object
+      properties:
+        data:
+          title: Array of entities
+          type: array
+          items:
+            type: object
+        meta:
+          title: Pagination Metadata
+          allOf:
+            - $ref: '#/components/schemas/PaginatedMetaDocumented'
+        links:
+          title: Links to pages
+          allOf:
+            - $ref: '#/components/schemas/PaginatedLinksDocumented'
+      required:
+        - data
+        - meta
+        - links
     CompanyUpdateDto:
       type: object
       properties:

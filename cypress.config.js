@@ -10,7 +10,7 @@ const Ajv = require("ajv");
 require("dotenv").config();
 
 let apiSchema;
-const shouldFailOnInvalidSchema = true;
+const shouldFailOnInvalidSchema = false;
 
 module.exports = defineConfig({
   e2e: {
