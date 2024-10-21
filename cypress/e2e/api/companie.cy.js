@@ -20,6 +20,23 @@ describe("API Integration Tests", () => {
       language: "es",
     };
 
+    const invalidDocuments = [
+      {
+        testName: "Test 3.8 - Should return 400 when creating a company with wrong CIF",
+        documentType: "CIF",
+        documentNumber: "B12345678",
+      },
+      {
+        testName: "Test 3.9 - Should return 400 when creating a company with wrong NIE",
+        documentType: "NIE",
+        documentNumber: "X1234567L",
+      },
+      {
+        testName: "Test 3.10 - Should return 400 when creating a company with wrong NIF",
+        documentType: "NIF",
+        documentNumber: "12345678Z",
+      },
+    ];
     it("Test 3.1 - Should create a company successfully with CIF", () => {
       companiesApi.postCompanies(validCompany, 201).then((response) => {
         expect(response.body).to.have.property("id");
@@ -82,33 +99,14 @@ describe("API Integration Tests", () => {
       });
     });
 
-    it("Test 3.8 - Should return 400 create a company successfully with wrong CIF", () => {
-      const otherCompany = { ...validCompany };
-      otherCompany.documentType = "CIF";
-      otherCompany.documentNumber = "B12345678";
-
-      companiesApi.postCompanies(otherCompany, 400).then((response) => {
-        expect(response.body).to.have.property("error");
-      });
-    });
-
-    it("Test 3.9 - Should return 400 create a company successfully with wrong NIE", () => {
-      const otherCompany = { ...validCompany };
-      otherCompany.documentType = "NIE";
-      otherCompany.documentNumber = "X1234567L";
-
-      companiesApi.postCompanies(otherCompany, 400).then((response) => {
-        expect(response.body).to.have.property("error");
-      });
-    });
-
-    it("Test 3.10 - Should return 400 create a company successfully with wrong NIF", () => {
-      const otherCompany = { ...validCompany };
-      otherCompany.documentType = "NIF";
-      otherCompany.documentNumber = "12345678Z";
-
-      companiesApi.postCompanies(otherCompany, 400).then((response) => {
-        expect(response.body).to.have.property("error");
+    invalidDocuments.forEach(({ testName, documentType, documentNumber }) => {
+      it(testName, () => {
+        const otherCompany = { ...validCompany };
+        otherCompany.documentType = documentType;
+        otherCompany.documentNumber = documentNumber;
+        companiesApi.postCompanies(otherCompany, 400).then((response) => {
+          expect(response.body).to.have.property("error");
+        });
       });
     });
   });
